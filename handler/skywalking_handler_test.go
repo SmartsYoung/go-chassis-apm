@@ -19,6 +19,7 @@ package handler_test
 
 import (
 	"context"
+	"github.com/go-chassis/go-chassis-apm/apm"
 
 	"github.com/go-chassis/go-chassis-apm/handler"
 	"github.com/go-chassis/go-chassis/core/config"
@@ -35,6 +36,10 @@ func initConfig() {
 	config.MicroserviceDefinition = &model.MicroserviceCfg{ServiceDescription: model.MicServiceStruct{Name: "skywalking"}}
 }
 
+//initApm
+func initApm() {
+	apm.Init()
+}
 
 //initInv
 func initInv() *invocation.Invocation {
@@ -62,7 +67,7 @@ func TestNewProvier(t *testing.T) {
 //TestProvierHandle
 func TestProvierHandle(t *testing.T) {
 	initConfig()
-
+	initApm()
 	c := chassisHandler.Chain{}
 	c.AddHandler(&handler.SkyWalkingProviderHandler{})
 	c.Next(initInv(), func(r *invocation.Response) error {
@@ -87,7 +92,7 @@ func TestNewConsumer(t *testing.T) {
 //TestConsumerHandle
 func TestConsumerHandle(t *testing.T) {
 	initConfig()
-
+	initApm()
 	c := chassisHandler.Chain{}
 	c.AddHandler(&handler.SkyWalkingConsumerHandler{})
 	c.Next(initInv(), func(r *invocation.Response) error {

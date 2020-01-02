@@ -51,6 +51,8 @@ github.com/go-chassis/go-chassis v1.7.3-0.20191018125535-1a99ab41f7ea h1:Gm7df0N
 github.com/go-chassis/go-chassis v1.7.3-0.20191018125535-1a99ab41f7ea/go.mod h1:Zdiwu/crt8XWcwWJOu9MoE3Ld0KHJwSPtAkEHYlOErI=
 github.com/go-chassis/go-chassis v1.8.0 h1:9I82WI+8U9ZNr6H67EDbhwLfNyOYMx8JKqiekBWMtk0=
 github.com/go-chassis/go-chassis v1.8.0/go.mod h1:RX+B2FTd0tFVFQE2kOBjXeDYnnz+TDUIBgtUfZdAeso=
+github.com/go-chassis/go-chassis v1.8.1 h1:YWCrVRwPHy2/JIxa3jUxjISH1Z9y93SvUuAkwXVC6kk=
+github.com/go-chassis/go-chassis v1.8.1/go.mod h1:vI0rU2FNAtGi6owfYKXBVj6cvq633/n+8bqbsVfib7E=
 github.com/go-chassis/go-chassis-apm v0.0.0-20191204033153-87995847a7a5/go.mod h1:wsRuNg5mGfACNgA09jzruRSoadoG4ke2WgRbgTIWsyQ=
 github.com/go-chassis/go-chassis-config v0.14.0 h1:OnM9sx2GalDC7vEIhPecRpQlVa8hz10NOB41+9tii5A=
 github.com/go-chassis/go-chassis-config v0.14.0/go.mod h1:qzvK/aoAv0O/khmF6ehW6RgELrF1JR2F555T9izoo2A=
