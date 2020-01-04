@@ -19,7 +19,7 @@ package skywalking_test
 
 import (
 	"context"
-	"github.com/go-chassis/go-chassis-apm/apm"
+	"github.com/go-chassis/go-chassis-apm/middleware/apm"
 	"github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 	"github.com/stretchr/testify/assert"
 	"testing"

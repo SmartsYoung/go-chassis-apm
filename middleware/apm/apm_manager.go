@@ -65,7 +65,7 @@ func Init() error {
 				return err
 			}
 		}
-		apm.Init(troption)
+		//apm.Init(troption)
 		openlogging.Info("apm Init:" + config.GetAPM().Tracing.Tracer + " service:" + config.MicroserviceDefinition.ServiceDescription.Name)
 	} else {
 		openlogging.Warn("apm Init failed. check apm config " + config.GetAPM().Tracing.Tracer)

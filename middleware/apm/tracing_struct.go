@@ -15,11 +15,3 @@ type SpanContext struct {
 	SpanLayerID   string
 	ServiceName   string
 }
-
-//TracingOptions for tracing option
-type TracingOptions struct {
-	APMName        string
-	ServerURI      string
-	MicServiceName string
-	MicServiceType int
-}

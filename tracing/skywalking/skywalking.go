@@ -20,7 +20,7 @@ package skywalking
 import (
 	//"github.com/go-chassis/go-chassis-apm/tracing"
 
-	"github.com/go-chassis/go-chassis-apm/apm"
+	"github.com/go-chassis/go-chassis-apm/middleware/apm"
 	"github.com/go-mesh/openlogging"
 	"github.com/tetratelabs/go2sky"
 	"github.com/tetratelabs/go2sky/reporter"

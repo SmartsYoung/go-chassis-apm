@@ -18,8 +18,7 @@
 package handler
 
 import (
-	"github.com/go-chassis/go-chassis-apm/apm"
-	//"github.com/go-chassis/go-chassis/core/apm"
+	"github.com/go-chassis/go-chassis-apm/middleware/apm"
 	chassisHandler "github.com/go-chassis/go-chassis/core/handler"
 	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/go-mesh/openlogging"
@@ -87,4 +86,9 @@ func (sc *SkyWalkingConsumerHandler) Name() string {
 //newSkyWalkingConsumer return consumer handler for SkyWalking
 func newSkyWalkingConsumer() chassisHandler.Handler {
 	return &SkyWalkingConsumerHandler{}
+}
+
+func init() {
+	chassisHandler.HandlerFuncMap[chassisHandler.SkyWalkingConsumer] = newSkyWalkingConsumer
+	chassisHandler.HandlerFuncMap[chassisHandler.SkyWalkingProvider] = newSkyWalkingProvider
 }
