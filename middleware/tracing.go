@@ -1,4 +1,4 @@
-package apm
+package middleware
 
 // TracingClient for apm interface
 type TracingClient interface {
@@ -6,5 +6,3 @@ type TracingClient interface {
 	CreateExitSpan(sc SpanContext) (interface{}, error)
 	EndSpan(sp interface{}, statusCode int) error
 }
-
-
