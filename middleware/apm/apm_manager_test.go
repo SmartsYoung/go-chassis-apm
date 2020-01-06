@@ -1,7 +1,9 @@
-package apm
+package apm_test
 
 import (
 	"context"
+
+	"github.com/go-chassis/go-chassis-apm/middleware/apm"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/config/model"
 	"github.com/go-chassis/go-chassis/core/invocation"
@@ -28,33 +30,33 @@ func initInv() *invocation.Invocation {
 //TestCreateEntrySpan
 func TestCreateEntrySpan(t *testing.T) {
 	initConfig()
-	err := Init()
+	err := apm.Init()
 	assert.Equal(t, err, nil)
-	span, err := CreateEntrySpan(initInv())
+	span, err := apm.CreateEntrySpan(initInv())
 	assert.Equal(t, err, nil)
-	EndSpan(span, 1)
+	apm.EndSpan(span, 1)
 }
 
 //TestExitSpan
 func TestExitSpan(t *testing.T) {
 	initConfig()
-	span, err := CreateEntrySpan(initInv())
+	span, err := apm.CreateEntrySpan(initInv())
 	assert.Equal(t, err, nil)
-	EndSpan(span, 1)
+	apm.EndSpan(span, 1)
 }
 
 //TestEndSpan
 func TestEndSpan(t *testing.T) {
 	initConfig()
-	span, err := CreateEntrySpan(initInv())
+	span, err := apm.CreateEntrySpan(initInv())
 	assert.Equal(t, err, nil)
-	err = EndSpan(span, 1)
+	err = apm.EndSpan(span, 1)
 	assert.Equal(t, err, nil)
 }
 
 //TestInit
 func TestInit(t *testing.T) {
 	initConfig()
-	err := Init()
+	err := apm.Init()
 	assert.Equal(t, err, nil)
 }

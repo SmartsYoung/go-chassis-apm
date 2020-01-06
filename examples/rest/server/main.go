@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/go-chassis/go-chassis"
 	_ "github.com/go-chassis/go-chassis-apm/handler"
+
 	"github.com/go-chassis/go-chassis-apm/middleware/apm"
 	_ "github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 	"github.com/go-chassis/go-chassis/core/lager"

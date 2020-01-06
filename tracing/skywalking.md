@@ -7,11 +7,12 @@ go-chassis-apm is a plugin of go chassis, it reports tracing data to skywalking 
 ```go
 import _ "github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 ```
-**then, Calling function Init() in middleware/apm/apm_manager.go manually to init skywalking manager.**
 
+2. init skywalking manager
 
+**Calling function Init() in middleware/apm/apm_manager.go manually to init skywalking manager.**
 
-2.edit conf/monitoring.yaml
+3.edit conf/monitoring.yaml
 
 **servicecomb.apm.tracing.tracer**
 >  *(optional, string)* tracer'name, only skywalking now
@@ -26,7 +27,7 @@ import _ "github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 **servicecomb.apm.tracing.settings.enable**
 >  *(optional, bool)* enable skywalking tracing ability
 
-3.Add handler name which are defined in github.com/go-chassis/go-chassis-apm/handler
+4.Add handler name which are defined in github.com/go-chassis/go-chassis-apm/handler
 
 skywalking-consumer and skywalking-provider
 

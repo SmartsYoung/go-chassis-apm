@@ -19,7 +19,7 @@ package skywalking_test
 
 import (
 	"context"
-	"github.com/go-chassis/go-chassis-apm/middleware/apm"
+	"github.com/go-chassis/go-chassis-apm/middleware"
 	"github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -27,13 +27,13 @@ import (
 
 
 var (
-	op           apm.TracingOptions
-	apmClient    apm.TracingClient
-	sc           apm.SpanContext
+	op        middleware.TracingOptions
+	apmClient middleware.TracingClient
+	sc        *middleware.SpanContext
 )
 
 func InitOption() {
-	op = apm.TracingOptions{
+	op = middleware.TracingOptions{
 		APMName:        "skywalking",
 		ServerURI:      "192.168.88.64:8080",
 		MicServiceName: "mesher",
@@ -41,7 +41,7 @@ func InitOption() {
 }
 
 func IniSpanContext() {
-	sc = apm.SpanContext{
+	sc = &middleware.SpanContext{
 		Ctx:           context.Background(),
 		OperationName: "test",
 		ParTraceCtx:   map[string]string{},

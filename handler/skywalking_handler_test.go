@@ -19,9 +19,8 @@ package handler_test
 
 import (
 	"context"
-	"github.com/go-chassis/go-chassis-apm/middleware/apm"
-
 	"github.com/go-chassis/go-chassis-apm/handler"
+	"github.com/go-chassis/go-chassis-apm/middleware/apm"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/config/model"
 	chassisHandler "github.com/go-chassis/go-chassis/core/handler"

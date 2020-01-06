@@ -32,6 +32,7 @@ type SkyWalkingProviderHandler struct {
 //Handle is for provider
 func (sp *SkyWalkingProviderHandler) Handle(chain *chassisHandler.Chain, i *invocation.Invocation, cb invocation.ResponseCallBack) {
 	openlogging.Debug("SkyWalkingProviderHandler begin " + i.MicroServiceName)
+
 	span, err := apm.CreateEntrySpan(i)
 	if err != nil {
 		openlogging.Error("CreateEntrySpan error: " + err.Error())
