@@ -21,8 +21,6 @@ import (
 	//"github.com/go-chassis/go-chassis-apm/tracing"
 
 	"github.com/go-chassis/go-chassis-apm/middleware"
-	"github.com/go-chassis/go-chassis/core/config"
-	"github.com/go-chassis/go-chassis/core/config/model"
 	"github.com/go-mesh/openlogging"
 	"github.com/tetratelabs/go2sky"
 	"github.com/tetratelabs/go2sky/reporter"
@@ -30,12 +28,6 @@ import (
 	skycom "github.com/tetratelabs/go2sky/reporter/grpc/common"
 	"strconv"
 )
-
-//initConfig
-func init() {
-	config.MonitorCfgDef = &model.MonitorCfg{ServiceComb: model.ServiceCombStruct{APM: model.APMStruct{Tracing: model.TracingStruct{Tracer: "skywalking", Settings: map[string]string{"URI": "127.0.0.1:11800", "enable": "true"}}}}}
-	config.MicroserviceDefinition = &model.MicroserviceCfg{ServiceDescription: model.MicServiceStruct{Name: "skywalking"}}
-}
 
 //for skywalkinng use
 const (
@@ -132,4 +124,14 @@ func NewApmClient(op middleware.TracingOptions) (middleware.TracingClient, error
 	client.ServiceType = int32(op.MicServiceType)
 	openlogging.Debug("NewApmClient succ. name:" + op.APMName + "uri:" + op.ServerURI)
 	return &client, err
+}
+
+var op middleware.TracingOptions
+
+func init() {
+	_, err := NewApmClient(op)
+	if err != nil {
+		openlogging.Error("NewAPMClient init error:" + err.Error())
+		return
+	}
 }
