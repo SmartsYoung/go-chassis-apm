@@ -74,16 +74,6 @@ func (s *SkyWalkingClient) CreateEntrySpan(sc *middleware.SpanContext) (interfac
 //CreateExitSpan create end span
 func (s *SkyWalkingClient) CreateExitSpan(sc *middleware.SpanContext) (interface{}, error) {
 	openlogging.Debug("CreateExitSpan begin. span:" + sc.OperationName)
-	/*	var (
-			err    error
-			client SkyWalkingClient
-		)
-		client.reporter, err = reporter.NewGRPCReporter(op.ServerURI)
-		if err != nil {
-			openlogging.Error("NewGRPCReporter error:" + err.Error())
-			return &client, err
-		}*/
-	//client.tracer, err = go2sky.NewTracer(op.MicServiceName, go2sky.WithReporter(client.reporter))
 	span, err := s.tracer.CreateExitSpan(sc.Ctx, sc.OperationName, sc.Peer, func(header string) error {
 		sc.TraceCtx[CrossProcessProtocolV2] = header
 		return nil
@@ -113,7 +103,7 @@ func (s *SkyWalkingClient) EndSpan(sp interface{}, statusCode int) error {
 }
 
 //NewApmClient init report and tracer for connecting and sending messages to skywalking server
-/*func NewApmClient(op middleware.TracingOptions) (middleware.TracingClient, error) {
+func NewApmClient(op middleware.TracingOptions) (middleware.TracingClient, error) {
 	var (
 		err    error
 		client SkyWalkingClient
@@ -134,29 +124,11 @@ func (s *SkyWalkingClient) EndSpan(sp interface{}, statusCode int) error {
 	client.ServiceType = int32(op.MicServiceType)
 	openlogging.Debug("NewApmClient succ. name:" + op.APMName + "uri:" + op.ServerURI)
 	return &client, err
-}*/
+}
 
+var tc middleware.TracingClient
 var op middleware.TracingOptions
 
-func Init() (middleware.TracingClient, error) {
-	var (
-		err    error
-		client SkyWalkingClient
-	)
-	client.reporter, err = reporter.NewGRPCReporter(op.ServerURI)
-	if err != nil {
-		openlogging.Error("NewGRPCReporter error:" + err.Error())
-		return &client, err
-	}
-	client.tracer, err = go2sky.NewTracer(op.MicServiceName, go2sky.WithReporter(client.reporter))
-	//not wait for register here
-	//t.WaitUntilRegister()
-	if err != nil {
-		openlogging.Error("NewTracer error:" + err.Error())
-		return &client, err
-
-	}
-	client.ServiceType = int32(op.MicServiceType)
-	openlogging.Debug("NewApmClient succ. name:" + op.APMName + "uri:" + op.ServerURI)
-	return &client, err
+func init() {
+	tc, _ = NewApmClient(op)
 }

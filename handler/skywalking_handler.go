@@ -18,12 +18,11 @@
 package handler
 
 import (
-	"github.com/go-chassis/go-chassis-apm/middleware/apm"
+	"github.com/go-chassis/go-chassis-apm/apm"
 	chassisHandler "github.com/go-chassis/go-chassis/core/handler"
 	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/go-mesh/openlogging"
 )
-
 
 //SkyWalkingProviderHandler struct
 type SkyWalkingProviderHandler struct {
@@ -64,10 +63,12 @@ func (sc *SkyWalkingConsumerHandler) Handle(chain *chassisHandler.Chain, i *invo
 	span, err := apm.CreateEntrySpan(i)
 	if err != nil {
 		openlogging.Error("CreateEntrySpan error:" + err.Error())
+		return
 	}
 	spanExit, err := apm.CreateExitSpan(i)
 	if err != nil {
 		openlogging.Error("CreateExitSpan error:" + err.Error())
+		return
 	}
 	chain.Next(i, func(r *invocation.Response) (err error) {
 		err = cb(r)

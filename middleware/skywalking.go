@@ -1,9 +1,27 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package middleware
 
 import (
 	"github.com/go-mesh/openlogging"
 	"github.com/tetratelabs/go2sky"
 	"github.com/tetratelabs/go2sky/reporter"
+
 	skycom "github.com/tetratelabs/go2sky/reporter/grpc/common"
 	"strconv"
 )
@@ -14,6 +32,12 @@ const (
 	CrossProcessProtocolV2 = "Sw6"
 	SkyName                = "skywalking"
 	DefaultTraceContext    = ""
+)
+
+//component id for skywalking which is used for topology
+const (
+	HTTPClientComponentID = 2
+	HTTPServerComponentID = 49
 )
 
 //SkyWalkingClient for connecting and reporting to skywalking server
@@ -92,8 +116,15 @@ func NewApmClient(op TracingOptions) (TracingClient, error) {
 	if err != nil {
 		openlogging.Error("NewTracer error:" + err.Error())
 		return &client, err
+
 	}
 	client.ServiceType = int32(op.MicServiceType)
 	openlogging.Debug("NewApmClient succ. name:" + op.APMName + "uri:" + op.ServerURI)
 	return &client, err
+}
+
+//Init apm client
+func Init(op TracingOptions) {
+	openlogging.Info("apm Init " + op.APMName + " " + op.ServerURI)
+	tc, _ = NewApmClient(op)
 }

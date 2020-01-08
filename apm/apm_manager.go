@@ -22,7 +22,7 @@ var troption middleware.TracingOptions
 func CreateEntrySpan(i *invocation.Invocation) (interface{}, error) {
 	openlogging.Debug("CreateEntrySpan:" + i.MicroServiceName)
 	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat}
-	span, err := middleware.CreateEntrySpan(&spanCtx, troption)
+	span, err := middleware.CreateEntrySpan(&spanCtx)
 	if err != nil {
 		openlogging.Error("CreateEntrySpan err:" + err.Error())
 		return nil, err
@@ -35,7 +35,7 @@ func CreateEntrySpan(i *invocation.Invocation) (interface{}, error) {
 func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
 	openlogging.Debug("CreateExitSpan:" + i.MicroServiceName)
 	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat, Peer: i.Endpoint + i.URLPathFormat, TraceCtx: map[string]string{}}
-	span, err := middleware.CreateExitSpan(&spanCtx, troption)
+	span, err := middleware.CreateExitSpan(&spanCtx)
 	if err != nil {
 		openlogging.Error("CreateExitSpan err:" + err.Error())
 		return nil, err
@@ -49,7 +49,7 @@ func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
 //EndSpan use invocation to make spans of apm end
 func EndSpan(span interface{}, status int) error {
 	openlogging.Debug("EndSpan " + strconv.Itoa(status))
-	middleware.EndSpan(span, status, troption)
+	middleware.EndSpan(span, status)
 	return nil
 }
 
