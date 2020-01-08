@@ -4,7 +4,6 @@ import (
 	//"github.com/go-chassis/go-chassis-apm/tracing"
 
 	"github.com/go-chassis/go-chassis-apm/middleware"
-	"github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/invocation"
 	"github.com/go-mesh/openlogging"
@@ -19,15 +18,11 @@ const (
 
 var troption middleware.TracingOptions
 
-var sc skywalking.SkyWalkingClient
-
-var s middleware.SpanContext
-
 //CreateEntrySpan use invocation to make spans for apm
 func CreateEntrySpan(i *invocation.Invocation) (interface{}, error) {
 	openlogging.Debug("CreateEntrySpan:" + i.MicroServiceName)
 	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat}
-	span, err := sc.CreateEntrySpan(s)
+	span, err := middleware.CreateEntrySpan(&spanCtx, troption)
 	if err != nil {
 		openlogging.Error("CreateEntrySpan err:" + err.Error())
 		return nil, err
@@ -40,7 +35,7 @@ func CreateEntrySpan(i *invocation.Invocation) (interface{}, error) {
 func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
 	openlogging.Debug("CreateExitSpan:" + i.MicroServiceName)
 	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat, Peer: i.Endpoint + i.URLPathFormat, TraceCtx: map[string]string{}}
-	span, err := sc.CreateExitSpan(s)
+	span, err := middleware.CreateExitSpan(&spanCtx, troption)
 	if err != nil {
 		openlogging.Error("CreateExitSpan err:" + err.Error())
 		return nil, err
@@ -54,7 +49,7 @@ func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
 //EndSpan use invocation to make spans of apm end
 func EndSpan(span interface{}, status int) error {
 	openlogging.Debug("EndSpan " + strconv.Itoa(status))
-	sc.EndSpan(span, status)
+	middleware.EndSpan(&span, status, troption)
 	return nil
 }
 
@@ -71,10 +66,12 @@ func Init() error {
 				return err
 			}
 		}
-		//apm.Init(troption)
+		middleware.Init(troption)
 		openlogging.Info("apm Init:" + config.GetAPM().Tracing.Tracer + " service:" + config.MicroserviceDefinition.ServiceDescription.Name)
+
 	} else {
 		openlogging.Warn("apm Init failed. check apm config " + config.GetAPM().Tracing.Tracer)
 	}
+
 	return nil
 }

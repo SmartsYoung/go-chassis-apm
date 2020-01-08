@@ -4,7 +4,7 @@ import (
 	"github.com/go-chassis/go-chassis"
 	_ "github.com/go-chassis/go-chassis-apm/handler"
 	"github.com/go-chassis/go-chassis-apm/middleware/apm"
-	_ "github.com/go-chassis/go-chassis-apm/tracing/skywalking"
+
 	"github.com/go-chassis/go-chassis/core/lager"
 	"github.com/go-chassis/go-chassis/core/server"
 	"github.com/go-chassis/go-chassis/examples/schemas"
@@ -22,5 +22,10 @@ func main() {
 		lager.Logger.Error("Init failed." + err.Error())
 		return
 	}
+	/*	if _,  err := skywalking.Init(); err != nil {
+		lager.Logger.Error("Init failed." + err.Error())
+		return
+	}*/
+
 	chassis.Run()
 }

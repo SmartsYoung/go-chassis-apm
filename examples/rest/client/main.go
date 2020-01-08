@@ -19,7 +19,6 @@ func main() {
 		lager.Logger.Error("Init failed." + err.Error())
 		return
 	}
-
 	req, err := rest.NewRequest("GET", "http://RESTServer/sayhello/world", nil)
 	if err != nil {
 		lager.Logger.Error("new request failed.")
