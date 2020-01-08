@@ -49,7 +49,7 @@ func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
 //EndSpan use invocation to make spans of apm end
 func EndSpan(span interface{}, status int) error {
 	openlogging.Debug("EndSpan " + strconv.Itoa(status))
-	middleware.EndSpan(&span, status, troption)
+	middleware.EndSpan(span, status, troption)
 	return nil
 }
 
