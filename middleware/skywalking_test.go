@@ -20,7 +20,6 @@ package middleware_test
 import (
 	"context"
 	"github.com/go-chassis/go-chassis-apm/middleware"
-	"github.com/go-chassis/go-chassis-apm/tracing/skywalking"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -56,7 +55,7 @@ func IniSpanContext() {
 func TestNewApmClient(t *testing.T) {
 	InitOption()
 	var err error
-	apmClient, err = skywalking.NewApmClient(op)
+	apmClient, err = middleware.NewApmClient(op)
 	assert.Equal(t, err, nil)
 }
 
@@ -64,7 +63,7 @@ func TestCreateEntrySpan(t *testing.T) {
 	InitOption()
 	IniSpanContext()
 	var err error
-	apmClient, err = skywalking.NewApmClient(op)
+	apmClient, err = middleware.NewApmClient(op)
 	assert.Equal(t, err, nil)
 	span, err := apmClient.CreateEntrySpan(sc)
 	assert.Equal(t, err, nil)
@@ -75,7 +74,7 @@ func TestCreateExitSpan(t *testing.T) {
 	InitOption()
 	IniSpanContext()
 	var err error
-	apmClient, err = skywalking.NewApmClient(op)
+	apmClient, err = middleware.NewApmClient(op)
 	assert.Equal(t, err, nil)
 	span, err := apmClient.CreateExitSpan(sc)
 	assert.Equal(t, err, nil)
@@ -86,7 +85,7 @@ func TestEndSpan(t *testing.T) {
 	InitOption()
 	IniSpanContext()
 	var err error
-	apmClient, err = skywalking.NewApmClient(op)
+	apmClient, err = middleware.NewApmClient(op)
 	assert.Equal(t, err, nil)
 	span, err := apmClient.CreateEntrySpan(sc)
 	assert.Equal(t, err, nil)

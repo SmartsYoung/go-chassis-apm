@@ -38,7 +38,11 @@ func (sp *SkyWalkingProviderHandler) Handle(chain *chassisHandler.Chain, i *invo
 	}
 	chain.Next(i, func(r *invocation.Response) (err error) {
 		err = cb(r)
-		apm.EndSpan(span, r.Status)
+		err = apm.EndSpan(span, r.Status)
+		if err != nil {
+			openlogging.Error("EndSpan error: " + err.Error())
+			return
+		}
 		return
 	})
 }
@@ -72,8 +76,16 @@ func (sc *SkyWalkingConsumerHandler) Handle(chain *chassisHandler.Chain, i *invo
 	}
 	chain.Next(i, func(r *invocation.Response) (err error) {
 		err = cb(r)
-		apm.EndSpan(spanExit, r.Status)
-		apm.EndSpan(span, r.Status)
+		err = apm.EndSpan(spanExit, r.Status)
+		if err != nil {
+			openlogging.Error("EndSpan error:" + err.Error())
+			return
+		}
+		err = apm.EndSpan(span, r.Status)
+		if err != nil {
+			openlogging.Error("EndSpan error:" + err.Error())
+			return
+		}
 		openlogging.Debug("SkyWalkingConsumerHandler end.")
 		return
 	})

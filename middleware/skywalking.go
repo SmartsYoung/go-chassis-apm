@@ -18,11 +18,11 @@
 package middleware
 
 import (
+	"github.com/SkyAPM/go2sky"
+	"github.com/SkyAPM/go2sky/reporter"
 	"github.com/go-mesh/openlogging"
-	"github.com/tetratelabs/go2sky"
-	"github.com/tetratelabs/go2sky/reporter"
 
-	skycom "github.com/tetratelabs/go2sky/reporter/grpc/common"
+	skycom "github.com/SkyAPM/go2sky/reporter/grpc/common"
 	"strconv"
 )
 
@@ -30,7 +30,6 @@ import (
 const (
 	HTTPPrefix             = "http://"
 	CrossProcessProtocolV2 = "Sw6"
-	SkyName                = "skywalking"
 	DefaultTraceContext    = ""
 )
 
@@ -48,7 +47,7 @@ type SkyWalkingClient struct {
 }
 
 //CreateEntrySpan create entry span
-func (s *SkyWalkingClient) CreateEntrySpan(sc *SpanContext) (interface{}, error) {
+func (s *SkyWalkingClient) CreateEntrySpan(sc *SpanContext) (go2sky.Span, error) {
 	openlogging.Debug("CreateEntrySpan begin. span" + sc.OperationName)
 	span, ctx, err := s.tracer.CreateEntrySpan(sc.Ctx, sc.OperationName, func() (string, error) {
 		if sc.ParTraceCtx != nil {
@@ -58,18 +57,18 @@ func (s *SkyWalkingClient) CreateEntrySpan(sc *SpanContext) (interface{}, error)
 	})
 	if err != nil {
 		openlogging.Error("CreateEntrySpan error:" + err.Error())
-		return &span, err
+		return nil, err
 	}
 	span.Tag(go2sky.TagHTTPMethod, sc.Method)
 	span.Tag(go2sky.TagURL, sc.URL)
 	span.SetSpanLayer(skycom.SpanLayer_Http)
 	span.SetComponent(s.ServiceType)
 	sc.Ctx = ctx
-	return &span, err
+	return span, nil
 }
 
 //CreateExitSpan create end span
-func (s *SkyWalkingClient) CreateExitSpan(sc *SpanContext) (interface{}, error) {
+func (s *SkyWalkingClient) CreateExitSpan(sc *SpanContext) (go2sky.Span, error) {
 	openlogging.Debug("CreateExitSpan begin. span:" + sc.OperationName)
 	span, err := s.tracer.CreateExitSpan(sc.Ctx, sc.OperationName, sc.Peer, func(header string) error {
 		sc.TraceCtx[CrossProcessProtocolV2] = header
@@ -83,19 +82,19 @@ func (s *SkyWalkingClient) CreateExitSpan(sc *SpanContext) (interface{}, error) 
 	span.Tag(go2sky.TagURL, sc.URL)
 	span.SetSpanLayer(skycom.SpanLayer_Http)
 	span.SetComponent(s.ServiceType)
-	return &span, err
+	return span, nil
 }
 
 //EndSpan make span end and report to skywalking
-func (s *SkyWalkingClient) EndSpan(sp interface{}, statusCode int) error {
+func (s *SkyWalkingClient) EndSpan(sp go2sky.Span, statusCode int) error {
 	openlogging.Debug("EndSpan status:" + strconv.Itoa(statusCode))
-	span, ok := (sp).(*go2sky.Span)
+	span, ok := (sp).(go2sky.Span)
 	if !ok || span == nil {
 		openlogging.Error("EndSpan failed.")
 		return nil
 	}
-	(*span).Tag(go2sky.TagStatusCode, strconv.Itoa(statusCode))
-	(*span).End()
+	span.Tag(go2sky.TagStatusCode, strconv.Itoa(statusCode))
+	span.End()
 	return nil
 }
 
@@ -108,23 +107,27 @@ func NewApmClient(op TracingOptions) (TracingClient, error) {
 	client.reporter, err = reporter.NewGRPCReporter(op.ServerURI)
 	if err != nil {
 		openlogging.Error("NewGRPCReporter error:" + err.Error())
-		return &client, err
+		return nil, err
 	}
 	client.tracer, err = go2sky.NewTracer(op.MicServiceName, go2sky.WithReporter(client.reporter))
 	//not wait for register here
 	//t.WaitUntilRegister()
 	if err != nil {
 		openlogging.Error("NewTracer error:" + err.Error())
-		return &client, err
-
+		return nil, err
 	}
 	client.ServiceType = int32(op.MicServiceType)
 	openlogging.Debug("NewApmClient succ. name:" + op.APMName + "uri:" + op.ServerURI)
-	return &client, err
+	return &client, nil
 }
 
 //Init apm client
 func Init(op TracingOptions) {
-	openlogging.Info("apm Init " + op.APMName + " " + op.ServerURI)
-	tc, _ = NewApmClient(op)
+	openlogging.Info("apm Init " + op.ServerURI)
+	var err error
+	tc, err = NewApmClient(op)
+	if err != nil {
+		openlogging.Error("NewAPMClient error:" + err.Error())
+		return
+	}
 }

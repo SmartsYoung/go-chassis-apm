@@ -1,8 +1,7 @@
 package apm
 
 import (
-	//"github.com/go-chassis/go-chassis-apm/tracing"
-
+	"github.com/SkyAPM/go2sky"
 	"github.com/go-chassis/go-chassis-apm/middleware"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/invocation"
@@ -19,7 +18,7 @@ const (
 var troption middleware.TracingOptions
 
 //CreateEntrySpan use invocation to make spans for apm
-func CreateEntrySpan(i *invocation.Invocation) (interface{}, error) {
+func CreateEntrySpan(i *invocation.Invocation) (go2sky.Span, error) {
 	openlogging.Debug("CreateEntrySpan:" + i.MicroServiceName)
 	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat}
 	span, err := middleware.CreateEntrySpan(&spanCtx)
@@ -32,7 +31,7 @@ func CreateEntrySpan(i *invocation.Invocation) (interface{}, error) {
 }
 
 //CreateExitSpan use invocation to make spans for apm
-func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
+func CreateExitSpan(i *invocation.Invocation) (go2sky.Span, error) {
 	openlogging.Debug("CreateExitSpan:" + i.MicroServiceName)
 	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat, Peer: i.Endpoint + i.URLPathFormat, TraceCtx: map[string]string{}}
 	span, err := middleware.CreateExitSpan(&spanCtx)
@@ -47,9 +46,13 @@ func CreateExitSpan(i *invocation.Invocation) (interface{}, error) {
 }
 
 //EndSpan use invocation to make spans of apm end
-func EndSpan(span interface{}, status int) error {
+func EndSpan(span go2sky.Span, status int) error {
 	openlogging.Debug("EndSpan " + strconv.Itoa(status))
-	middleware.EndSpan(span, status)
+	err := middleware.EndSpan(span, status)
+	if err != nil {
+		openlogging.Error("EndSpan err:" + err.Error())
+		return err
+	}
 	return nil
 }
 
