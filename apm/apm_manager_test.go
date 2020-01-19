@@ -11,7 +11,7 @@ import (
 
 //initConfig
 func initConfig() {
-	config.MonitorCfgDef = &model.MonitorCfg{ServiceComb: model.ServiceCombStruct{APM: model.APMStruct{Tracing: model.TracingStruct{Tracer: "skywalking", Settings: map[string]string{"URI": "127.0.0.1:11800", "enable": "true"}}}}}
+	config.MonitorCfgDef = &model.MonitorCfg{ServiceComb: model.ServiceCombStruct{APM: model.APMStruct{Tracing: model.TracingStruct{Settings: map[string]string{"URI": "127.0.0.1:11800", "enable": "true"}}}}}
 	config.MicroserviceDefinition = &model.MicroserviceCfg{ServiceDescription: model.MicServiceStruct{Name: "skywalking"}}
 }
 

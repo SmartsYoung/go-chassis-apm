@@ -15,31 +15,31 @@
  * limitations under the License.
  */
 
-package middleware_test
+package tracing_test
 
 import (
 	"context"
-	"github.com/go-chassis/go-chassis-apm/middleware"
+	"github.com/go-chassis/go-chassis/middleware/tracing"
+
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 var (
-	op        middleware.TracingOptions
-	apmClient middleware.TracingClient
-	sc        *middleware.SpanContext
+	op        tracing.TracingOptions
+	apmClient tracing.TracingClient
+	sc        *tracing.SpanContext
 )
 
 func InitOption() {
-	op = middleware.TracingOptions{
-		APMName:        "skywalking",
+	op = tracing.TracingOptions{
 		ServerURI:      "192.168.88.64:8080",
 		MicServiceName: "mesher",
 		MicServiceType: 1}
 }
 
 func IniSpanContext() {
-	sc = &middleware.SpanContext{
+	sc = &tracing.SpanContext{
 		Ctx:           context.Background(),
 		OperationName: "test",
 		ParTraceCtx:   map[string]string{},
@@ -52,10 +52,15 @@ func IniSpanContext() {
 		ServiceName:   "mesher"}
 }
 
+func TestInit(t *testing.T) {
+	InitOption()
+	tracing.Init(op)
+}
+
 func TestNewApmClient(t *testing.T) {
 	InitOption()
 	var err error
-	apmClient, err = middleware.NewApmClient(op)
+	apmClient, err = tracing.NewApmClient(op)
 	assert.Equal(t, err, nil)
 }
 
@@ -63,7 +68,7 @@ func TestCreateEntrySpan(t *testing.T) {
 	InitOption()
 	IniSpanContext()
 	var err error
-	apmClient, err = middleware.NewApmClient(op)
+	apmClient, err = tracing.NewApmClient(op)
 	assert.Equal(t, err, nil)
 	span, err := apmClient.CreateEntrySpan(sc)
 	assert.Equal(t, err, nil)
@@ -74,7 +79,7 @@ func TestCreateExitSpan(t *testing.T) {
 	InitOption()
 	IniSpanContext()
 	var err error
-	apmClient, err = middleware.NewApmClient(op)
+	apmClient, err = tracing.NewApmClient(op)
 	assert.Equal(t, err, nil)
 	span, err := apmClient.CreateExitSpan(sc)
 	assert.Equal(t, err, nil)
@@ -85,7 +90,7 @@ func TestEndSpan(t *testing.T) {
 	InitOption()
 	IniSpanContext()
 	var err error
-	apmClient, err = middleware.NewApmClient(op)
+	apmClient, err = tracing.NewApmClient(op)
 	assert.Equal(t, err, nil)
 	span, err := apmClient.CreateEntrySpan(sc)
 	assert.Equal(t, err, nil)

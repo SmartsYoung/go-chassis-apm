@@ -9,7 +9,8 @@ require (
 )
 
 //replace github.com/go-chassis/go-chassis latest => github.com/SmartsYoung/go-chassis v1.8.1-20200109142703-00724bde9095
-//replace github.com/go-chassis/go-chassis v1.8.1 => ../go-chassis
+replace github.com/go-chassis/go-chassis v1.8.1 => ../go-chassis
+
 //replace github.com/go-chassis/go-chassis v1.8.1 => github.com/SmartsYoung/go-chassis v1.8.1
 
 go 1.13

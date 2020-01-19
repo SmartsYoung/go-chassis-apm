@@ -2,9 +2,9 @@ package apm
 
 import (
 	"github.com/SkyAPM/go2sky"
-	"github.com/go-chassis/go-chassis-apm/middleware"
 	"github.com/go-chassis/go-chassis/core/config"
 	"github.com/go-chassis/go-chassis/core/invocation"
+	"github.com/go-chassis/go-chassis/middleware/tracing"
 	"github.com/go-mesh/openlogging"
 	"strconv"
 )
@@ -15,13 +15,13 @@ const (
 	ServerType = "serverType"
 )
 
-var troption middleware.TracingOptions
+var troption tracing.TracingOptions
 
 //CreateEntrySpan use invocation to make spans for apm
 func CreateEntrySpan(i *invocation.Invocation) (go2sky.Span, error) {
 	openlogging.Debug("CreateEntrySpan:" + i.MicroServiceName)
-	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat}
-	span, err := middleware.CreateEntrySpan(&spanCtx)
+	spanCtx := tracing.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat}
+	span, err := tracing.CreateEntrySpan(&spanCtx)
 	if err != nil {
 		openlogging.Error("CreateEntrySpan err:" + err.Error())
 		return nil, err
@@ -33,8 +33,8 @@ func CreateEntrySpan(i *invocation.Invocation) (go2sky.Span, error) {
 //CreateExitSpan use invocation to make spans for apm
 func CreateExitSpan(i *invocation.Invocation) (go2sky.Span, error) {
 	openlogging.Debug("CreateExitSpan:" + i.MicroServiceName)
-	spanCtx := middleware.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat, Peer: i.Endpoint + i.URLPathFormat, TraceCtx: map[string]string{}}
-	span, err := middleware.CreateExitSpan(&spanCtx)
+	spanCtx := tracing.SpanContext{Ctx: i.Ctx, OperationName: i.MicroServiceName + i.URLPathFormat, ParTraceCtx: i.Headers(), Method: i.Protocol, URL: i.MicroServiceName + i.URLPathFormat, Peer: i.Endpoint + i.URLPathFormat, TraceCtx: map[string]string{}}
+	span, err := tracing.CreateExitSpan(&spanCtx)
 	if err != nil {
 		openlogging.Error("CreateExitSpan err:" + err.Error())
 		return nil, err
@@ -48,7 +48,7 @@ func CreateExitSpan(i *invocation.Invocation) (go2sky.Span, error) {
 //EndSpan use invocation to make spans of apm end
 func EndSpan(span go2sky.Span, status int) error {
 	openlogging.Debug("EndSpan " + strconv.Itoa(status))
-	err := middleware.EndSpan(span, status)
+	err := tracing.EndSpan(span, status)
 	if err != nil {
 		openlogging.Error("EndSpan err:" + err.Error())
 		return err
@@ -59,8 +59,8 @@ func EndSpan(span go2sky.Span, status int) error {
 //Init apm
 func Init() error {
 	openlogging.Debug("apm Init " + config.GetAPM().Tracing.Tracer)
-	if config.GetAPM().Tracing.Tracer != "" && config.GetAPM().Tracing.Settings != nil && config.GetAPM().Tracing.Settings[URI] != "" {
-		troption = middleware.TracingOptions{APMName: config.GetAPM().Tracing.Tracer, MicServiceName: config.MicroserviceDefinition.ServiceDescription.Name, ServerURI: config.GetAPM().Tracing.Settings["URI"]}
+	if config.GetAPM().Tracing.Settings != nil && config.GetAPM().Tracing.Settings[URI] != "" {
+		troption = tracing.TracingOptions{MicServiceName: config.MicroserviceDefinition.ServiceDescription.Name, ServerURI: config.GetAPM().Tracing.Settings["URI"]}
 		if serverType, ok := config.GetAPM().Tracing.Settings[ServerType]; ok { //
 			var err error
 			troption.MicServiceType, err = strconv.Atoi(serverType)
@@ -69,11 +69,11 @@ func Init() error {
 				return err
 			}
 		}
-		middleware.Init(troption)
-		openlogging.Info("apm Init:" + config.GetAPM().Tracing.Tracer + " service:" + config.MicroserviceDefinition.ServiceDescription.Name)
+		tracing.Init(troption)
+		openlogging.Info("apm init service:" + config.MicroserviceDefinition.ServiceDescription.Name)
 
 	} else {
-		openlogging.Warn("apm Init failed. check apm config " + config.GetAPM().Tracing.Tracer)
+		openlogging.Warn("apm Init failed. check apm config ")
 	}
 
 	return nil

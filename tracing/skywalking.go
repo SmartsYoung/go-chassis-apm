@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package middleware
+package tracing
 
 import (
 	"github.com/SkyAPM/go2sky"
@@ -117,7 +117,7 @@ func NewApmClient(op TracingOptions) (TracingClient, error) {
 		return nil, err
 	}
 	client.ServiceType = int32(op.MicServiceType)
-	openlogging.Debug("NewApmClient succ. name:" + op.APMName + "uri:" + op.ServerURI)
+	openlogging.Debug("NewApmClient skywalking success:" + "uri:" + op.ServerURI)
 	return &client, nil
 }
 
