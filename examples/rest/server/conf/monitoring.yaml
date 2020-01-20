@@ -1,0 +1,8 @@
+servicecomb:
+  apm:                                #application performance monitor
+    tracing:
+      tracer: skywalking
+      settings:
+        enable: true                  #enable tracing ability
+        URI: 127.0.0.1:11800          #url of skywalking
+        serverType: 5001              #server type
